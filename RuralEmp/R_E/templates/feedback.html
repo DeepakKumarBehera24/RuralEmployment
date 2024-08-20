@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">We Value Your Feedback</h2>
+        <p class="lead mb-4">Please fill out the form below to provide us with your feedback. Your thoughts and suggestions are important to us!</p>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                        <input type="text" name="name" id="{{ form.name.id_for_label }}" class="form-control" placeholder="Enter your name" value="{{ form.name.value }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.feedback.id_for_label }}" class="form-label">Feedback</label>
+                        <textarea name="feedback" id="{{ form.feedback.id_for_label }}" class="form-control" placeholder="Enter your feedback">{{ form.feedback.value }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.rating.id_for_label }}" class="form-label">Rating</label>
+                        <select name="rating" id="{{ form.rating.id_for_label }}" class="form-select">
+                            {% for value, display in form.rating.field.choices %}
+                                <option value="{{ value }}" {% if value == form.rating.value %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

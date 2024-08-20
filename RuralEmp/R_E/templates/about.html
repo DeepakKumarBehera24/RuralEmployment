@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        /* About page styling */
+        .about-container {
+            padding: 50px;
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .about-header {
+            font-size: 36px;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .about-subheader {
+            font-size: 24px;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        .about-text {
+            font-size: 16px;
+            color: #495057;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .about-image {
+            max-width: 100%;
+            height: auto;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-section {
+            margin-bottom: 50px;
+        }
+
+        .about-section h3 {
+            font-size: 28px;
+            color: #343a40;
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            font-size: 16px;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .about-footer {
+            font-size: 14px;
+            color: #868e96;
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+
+    <div class="about-container">
+        <h1 class="about-header">About Us</h1>
+        <h2 class="about-subheader">Our Mission and Vision</h2>
+
+        <p class="about-text">
+            Welcome to our website! We are dedicated to providing top-notch services in the IT field, including blockchain solutions, AI, machine learning, web design, website development, backend development, cybersecurity, and app development. Our mission is to empower businesses by delivering innovative and efficient solutions that drive success in the digital age.
+        </p>
+
+        <img src="{% static 'images/image_1.avif' %}" alt="About Us" class="about-image">
+
+        <div class="about-section">
+            <h3>Who We Are</h3>
+            <p>
+                We are a team of passionate professionals with a deep understanding of technology and a commitment to excellence. Our expertise spans various domains, allowing us to offer a wide range of services tailored to meet the unique needs of our clients.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h3>Our Core Values</h3>
+            <p>
+                Integrity, innovation, and customer satisfaction are the core values that drive everything we do. We believe in building long-term relationships with our clients by delivering high-quality work and exceeding expectations.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h3>What We Do</h3>
+            <p>
+                Our services are designed to help businesses navigate the complexities of the modern digital landscape. Whether you're looking to build a new website, enhance your cybersecurity, or implement cutting-edge AI solutions, we're here to help you achieve your goals.
+            </p>
+        </div>
+
+        <p class="about-footer">
+            Thank you for choosing us as your trusted partner. We look forward to working with you and helping you succeed!
+        </p>
+    </div>
+{% endblock %}

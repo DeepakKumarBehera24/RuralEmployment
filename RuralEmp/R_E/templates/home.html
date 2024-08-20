@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        /* Home page styling */
+        .hero-section {
+            background-color: #f8f9fa;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        .image-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-button {
+            margin-top: 20px;
+        }
+
+        .feedback-section {
+            background-color: #ffffff;
+            padding: 50px 20px;
+            text-align: center;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-section h2 {
+            font-size: 32px;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+
+        .feedback-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .feedback-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 0 0 auto;
+            max-width: 300px;
+        }
+
+        .feedback-card p {
+            font-size: 16px;
+            color: #495057;
+            margin: 0;
+        }
+
+        .feedback-card .feedback-name {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .star-rating {
+            color: #ffc107; /* Bootstrap's warning color for stars */
+            font-size: 20px;
+        }
+
+        .star-rating .star {
+            display: inline-block;
+            margin-right: 2px;
+        }
+    </style>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <h1 class="hero-title">Welcome to Our IT Services</h1>
+        <p class="hero-subtitle">We provide top-notch solutions in AI, blockchain, web development, and more.</p>
+    </div>
+
+    <!-- Image Section -->
+    <div class="image-section">
+        <img src="{% static 'images/image_1.avif' %}" alt="Our Services">
+            <div class="text-center mt-4">
+                <a href="{% url 'contact' %}" class="btn btn-primary">Contact Us</a>
+            </div>
+    </div>
+
+    <!-- Feedback Section -->
+<div class="feedback-section">
+    <h2>What Our Customers Say</h2>
+    <div class="feedback-container">
+        {% for feedback in feedbacks %}
+        <div class="feedback-card">
+            <p class="feedback-name">"{{ feedback.feedback }}"</p>
+            <p><i> -- "{{ feedback.name }}"</i></p>
+            <div class="star-rating">
+                {% for i in range %}
+                    {% if i <= feedback.rating %}
+                        <span class="star">★</span> <!-- Full star -->
+                    {% else %}
+                        <span class="star">✩</span> <!-- Empty star -->
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

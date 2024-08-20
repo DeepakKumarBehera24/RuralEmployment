@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        /* Styling the Add Jobs button */
+        .add-jobs-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-jobs-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling the job list */
+        .job-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .job-list li {
+            background-color: #f8f9fa;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-list h3 {
+            margin-top: 0;
+            color: #343a40;
+        }
+
+        .job-list p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+
+        .job-list p strong {
+            color: #343a40;
+        }
+    </style>
+
+    <!-- Add Jobs Button -->
+    <a href="/jobform" class="add-jobs-button" style="margin-top : 50px;">Add Jobs</a>
+
+    <!-- Jobs Listing -->
+    <h1>Jobs Available</h1>
+    <ul class="job-list">
+        {% for j in myjob %}
+        <li>
+            <h3>Job {{ forloop.counter }}</h3>
+            <p><strong>Name:</strong> {{ j.name }}</p>
+            <p><strong>Description:</strong> {{ j.jobDescription }}</p>
+            <p><strong>Place:</strong> {{ j.place }}</p>
+            <p><strong>Price:</strong> {{ j.price }}</p>
+            <p><strong>Date:</strong> {{ j.date }}</p>
+            <p><strong>Time Span:</strong> {{ j.timeSpan }}</p>
+            <p><strong>Phone Number:</strong> {{ j.phoneNumber }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

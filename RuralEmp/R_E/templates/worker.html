@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        /* Add Worker Head button styling */
+        .add-worker-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-worker-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Styling the workerhead list */
+        .workerhead-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .workerhead-list li {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .workerhead-list li:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .workerhead-list h3 {
+            margin-top: 0;
+            color: #343a40;
+            font-size: 20px;
+        }
+
+        .workerhead-list p {
+            margin: 8px 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .workerhead-list p strong {
+            color: #495057;
+        }
+    </style>
+
+    <!-- Add Worker Head Button -->
+    <a href="/workform" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
+
+    <!-- Worker Heads Listing -->
+    <h1>Worker Heads</h1>
+    <ul class="workerhead-list">
+        {% for worker in workerheads %}
+        <li>
+            <h3>{{ worker.name }}</h3>
+            <p><strong>Number of Workers:</strong> {{ worker.numberOfWorker }}</p>
+            <p><strong>Salary per Day:</strong> {{ worker.salaryPerDay }}</p>
+            <p><strong>Machine Available:</strong> {{ worker.machineAvailable }}</p>
+            <p><strong>Date:</strong> {{ worker.date }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

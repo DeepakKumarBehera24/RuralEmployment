@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <title>My Site</title>
+</head>
+<body>
+<div class="container">
+    <ul class="nav bg-info">
+        <li>
+            <h1>RURAL EMPLOYMENT PORTAL</h1>
+        </li>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/">HOME</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/about">About</a>
+        </li>
+        {% if request.session.user_id %}
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/worker">Worker</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/job">Jobs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/feedback">Feedback</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/logout">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-light" href="/signup">SignUp</a>
+        </li>
+        {% endif %}
+    </ul>
+    {% block content %}
+    <!-- Content will be injected here -->
+    {% endblock %}
+</div>
+</body>
+</html>
