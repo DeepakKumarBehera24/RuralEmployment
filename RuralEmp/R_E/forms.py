@@ -1,32 +1,42 @@
 from django import forms
 from .models import *
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 
-class MySignup(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, label="Password")
-    reEnter = forms.CharField(widget=forms.PasswordInput, label="Re-enter Password")
+class MySignupForm(forms.ModelForm):
+    password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
+    password2 = forms.CharField(widget=forms.PasswordInput, label="Re-enter Password")
     DOB = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),
-        input_formats=['%d-%m-%Y', '%Y-%m-%d']  # Accepts both 'DD-MM-YYYY' and 'YYYY-MM-DD'
+        input_formats=['%d-%m-%Y', '%Y-%m-%d']
     )
+    userType = forms.ChoiceField(choices=Signup.USER_TYPE, widget=forms.RadioSelect)
 
     class Meta:
         model = Signup
-        fields = ['firstName', 'lastName', 'DOB', 'city', 'state', 'phoneNumber', 'userType', 'adharNumber', 'password']
-
-        widgets = {
-            'userType': forms.RadioSelect(choices=Signup.USER_TYPE),
-        }
+        fields = ['firstName', 'lastName', 'DOB', 'city', 'state', 'phoneNumber', 'userType', 'adharNumber']
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        reEnter = cleaned_data.get("reEnter")
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
 
-        if password and reEnter and password != reEnter:
+        if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match. Please enter them again.")
 
         return cleaned_data
+
+    def save(self, commit=True):
+        user = User.objects.create_user(
+            username=self.cleaned_data['phoneNumber'],  # or another unique identifier
+            password=self.cleaned_data['password1']
+        )
+        signup = super().save(commit=False)
+        signup.user = user
+        if commit:
+            signup.save()
+        return signup
 
 
 class MyLogin(forms.Form):

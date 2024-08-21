@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
 
 
 class Signup(models.Model):
@@ -8,38 +9,35 @@ class Signup(models.Model):
         ('job provider', 'Job Provider')
     ]
 
-    firstName = models.CharField(max_length=20, null=False)
-    lastName = models.CharField(max_length=20, null=False)
-    DOB = models.DateField(null=False)
-    city = models.CharField(max_length=30, null=False)
-    state = models.CharField(max_length=15, null=False)
-    phoneNumber = models.CharField(max_length=15, unique=True)  # Changed to CharField for phone numbers
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='signup', default=1)
+    firstName = models.CharField(max_length=20)
+    lastName = models.CharField(max_length=20)
+    DOB = models.DateField()
+    city = models.CharField(max_length=30)
+    state = models.CharField(max_length=15)
+    phoneNumber = models.CharField(max_length=15, unique=True)
     userType = models.CharField(max_length=20, choices=USER_TYPE, default='worker head')
-    adharNumber = models.CharField(max_length=16)  # Changed to CharField for adharNumber
-    password = models.CharField(max_length=128)
-
-    def set_password(self, raw_password):
-        self.password = make_password(raw_password)
-
-    def check_password(self, raw_password):
-        return check_password(raw_password, self.password)
+    adharNumber = models.CharField(max_length=16)
 
     def __str__(self):
         return f"{self.firstName} {self.lastName}"
 
 
 class WorkerHead(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=30, null=False)
     numberOfWorker = models.IntegerField(null=False)
     salaryPerDay = models.IntegerField(null=False)
     machineAvailable = models.CharField(max_length=300, null=False)
     date = models.DateField(null=False)
+    phoneNumber = models.BigIntegerField(null=False, default=1234567890)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}{self.phoneNumber}"
 
 
 class Job(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=30, null=False)
     jobDescription = models.TextField(null=True)
     place = models.CharField(max_length=50)

@@ -31,6 +31,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         .job-list h3 {
@@ -46,10 +47,37 @@
         .job-list p strong {
             color: #343a40;
         }
+
+        /* Job status indicator styling */
+        .job-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .job-status.done {
+            color: red;
+        }
+
+        .job-status.available {
+            color: green;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
     </style>
 
     <!-- Add Jobs Button -->
-    <a href="/jobform" class="add-jobs-button" style="margin-top : 50px;">Add Jobs</a>
+    <a href="/jobform" class="add-jobs-button" style="margin-top: 50px;">Add Jobs</a>
 
     <!-- Jobs Listing -->
     <h1>Jobs Available</h1>
@@ -64,6 +92,16 @@
             <p><strong>Date:</strong> {{ j.date }}</p>
             <p><strong>Time Span:</strong> {{ j.timeSpan }}</p>
             <p><strong>Phone Number:</strong> {{ j.phoneNumber }}</p>
+            {% if j.user == request.user %}
+                <a href="{% url 'edit_job' j.id %}">Edit</a>
+                <a href="{% url 'delete_job' j.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+            {% endif %}
+            <!-- Job Status Indicator -->
+            {% if j.status == 'done' %}
+                <span class="job-status done">&#10004; <!-- Red Tick Mark --></span>
+            {% else %}
+                <span class="job-status available">&#9679; <!-- Green Circle --></span>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

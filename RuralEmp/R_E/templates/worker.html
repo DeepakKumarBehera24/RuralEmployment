@@ -21,7 +21,7 @@
             transform: scale(1.05);
         }
 
-        /* Styling the workerhead list */
+        /* Styling the worker head list */
         .workerhead-list {
             list-style-type: none;
             padding: 0;
@@ -58,10 +58,21 @@
         .workerhead-list p strong {
             color: #495057;
         }
+
+        .worker-actions a {
+            margin-right: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .worker-actions a:hover {
+            text-decoration: underline;
+        }
     </style>
 
     <!-- Add Worker Head Button -->
-    <a href="/workform" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
+    <a href="{% url 'workform' %}" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
 
     <!-- Worker Heads Listing -->
     <h1>Worker Heads</h1>
@@ -73,6 +84,13 @@
             <p><strong>Salary per Day:</strong> {{ worker.salaryPerDay }}</p>
             <p><strong>Machine Available:</strong> {{ worker.machineAvailable }}</p>
             <p><strong>Date:</strong> {{ worker.date }}</p>
+            <p><strong>Phone Number:</strong> {{ worker.phoneNumber }}</p>
+            {% if worker.user == request.user %}
+                <div class="worker-actions">
+                    <a href="{% url 'edit_worker' worker.id %}">Edit</a>
+                    <a href="{% url 'delete_worker' worker.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+                </div>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

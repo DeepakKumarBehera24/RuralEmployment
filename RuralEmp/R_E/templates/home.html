@@ -111,7 +111,7 @@
         {% for feedback in feedbacks %}
         <div class="feedback-card">
             <p class="feedback-name">"{{ feedback.feedback }}"</p>
-            <p><i> -- "{{ feedback.name }}"</i></p>
+            <p><i> -"{{ feedback.name }}"</i></p>
             <div class="star-rating">
                 {% for i in range %}
                     {% if i <= feedback.rating %}

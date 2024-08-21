@@ -20,7 +20,7 @@
         <li class="nav-item">
             <a class="nav-link link-light" href="/about">About</a>
         </li>
-        {% if request.session.user_id %}
+        {% if user.is_authenticated %}
         <li class="nav-item">
             <a class="nav-link link-light" href="/worker">Worker</a>
         </li>
@@ -33,6 +33,12 @@
         <li class="nav-item">
             <a class="nav-link link-light" href="/logout">Logout</a>
         </li>
+        <li class="nav-item">
+        <span class="nav-link text-light">
+            Hi {{ user.username }} <!-- Display user's full name -->
+            <!-- Debugging: Check user object -->
+        </span>
+    </li>
         {% else %}
         <li class="nav-item">
             <a class="nav-link link-light" href="/login">Login</a>
