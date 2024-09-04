@@ -50,6 +50,11 @@ class WorkerHeadForm(forms.ModelForm):
         input_formats=['%d-%m-%Y', '%Y-%m-%d']
     )
 
+    email = forms.EmailField(
+        required=True,  # Make the email field required
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter owner email'})
+    )
+
     class Meta:
         model = WorkerHead
         fields = '__all__'

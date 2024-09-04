@@ -7,8 +7,8 @@
             display: inline-block;
             margin-bottom: 20px;
             padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
+            background-color: yellow;
+            color: black;
             font-size: 16px;
             text-align: center;
             text-decoration: none;
@@ -69,10 +69,52 @@
         .worker-actions a:hover {
             text-decoration: underline;
         }
+
+        .search-form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-form select,
+        .search-form input[type="text"],
+        .search-form button {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        .search-form button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
     </style>
 
     <!-- Add Worker Head Button -->
     <a href="{% url 'workform' %}" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
+
+    <!-- Search and Filter Form -->
+    <form method="get" class="search-form">
+        <select name="filter_by">
+            <option value="" {% if not filter_by %}selected{% endif %}>Filter by</option>
+            <option value="name" {% if filter_by == 'name' %}selected{% endif %}>Name</option>
+            <option value="machine" {% if filter_by == 'machine' %}selected{% endif %}>Machine Available</option>
+            <option value="number_of_workers" {% if filter_by == 'number_of_workers' %}selected{% endif %}>Number of Workers</option>
+            <option value="salary" {% if filter_by == 'salary' %}selected{% endif %}>Salary per Day</option>
+            <!-- Add more filter options here if needed -->
+        </select>
+        <input type="text" name="search" value="{{ search_query }}" placeholder="Search..." />
+        <button type="submit">Search</button>
+    </form>
 
     <!-- Worker Heads Listing -->
     <h1>Worker Heads</h1>
@@ -92,6 +134,8 @@
                 </div>
             {% endif %}
         </li>
+        {% empty %}
+        <p>No worker heads found.</p>
         {% endfor %}
     </ul>
 {% endblock %}

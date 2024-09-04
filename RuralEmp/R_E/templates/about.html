@@ -4,29 +4,30 @@
     <style>
         /* About page styling */
         .about-container {
+            font-family:"Apple LiGothic", sans-serif;
             padding: 50px;
-            max-width: 900px;
+            max-width: 1500px;
             margin: auto;
-            text-align: center;
+            text-align: left;
+            background-color: #D5ED9F; /* Light background for contrast */
+            color: #5F6F65; /* Dark text color for readability */
         }
 
         .about-header {
             font-size: 36px;
-            color: #343a40;
+            color: #387F39;
             margin-bottom: 20px;
         }
 
         .about-subheader {
             font-size: 24px;
-            color: #6c757d;
+            color: #387F39;
             margin-bottom: 40px;
         }
 
         .about-text {
             font-size: 16px;
-            color: #495057;
             line-height: 1.6;
-            text-align: left;
             margin-bottom: 40px;
         }
 
@@ -44,19 +45,17 @@
 
         .about-section h3 {
             font-size: 28px;
-            color: #343a40;
+            color: #387F39;
             margin-bottom: 15px;
         }
 
         .about-section p {
             font-size: 16px;
-            color: #495057;
             line-height: 1.6;
         }
 
         .about-footer {
             font-size: 14px;
-            color: #868e96;
             margin-top: 50px;
             text-align: center;
         }
@@ -64,37 +63,37 @@
 
     <div class="about-container">
         <h1 class="about-header">About Us</h1>
-        <h2 class="about-subheader">Our Mission and Vision</h2>
+        <h2 class="about-subheader">Empowering Rural Communities through Innovative Solutions</h2>
 
         <p class="about-text">
-            Welcome to our website! We are dedicated to providing top-notch services in the IT field, including blockchain solutions, AI, machine learning, web design, website development, backend development, cybersecurity, and app development. Our mission is to empower businesses by delivering innovative and efficient solutions that drive success in the digital age.
+            Welcome to Gram Setu! We are dedicated to bridging the gap between farmers and contractors by providing a seamless platform for rural employment. Our mission is to enhance agricultural efficiency and support rural livelihoods through access to skilled labor and essential machinery.
         </p>
 
-        <img src="{% static 'images/image_1.avif' %}" alt="About Us" class="about-image">
+        <img src="{% static 'images/image_2.jpg' %}" alt="About Us" class="about-image">
 
         <div class="about-section">
             <h3>Who We Are</h3>
             <p>
-                We are a team of passionate professionals with a deep understanding of technology and a commitment to excellence. Our expertise spans various domains, allowing us to offer a wide range of services tailored to meet the unique needs of our clients.
+                We are a team of committed professionals with a passion for rural development and agricultural innovation. Our diverse expertise enables us to offer tailored solutions that address the unique needs of both farmers and contractors.
             </p>
         </div>
 
         <div class="about-section">
             <h3>Our Core Values</h3>
             <p>
-                Integrity, innovation, and customer satisfaction are the core values that drive everything we do. We believe in building long-term relationships with our clients by delivering high-quality work and exceeding expectations.
+                Integrity, innovation, and community are at the heart of our operations. We strive to build lasting relationships by delivering reliable services and contributing positively to rural economies.
             </p>
         </div>
 
         <div class="about-section">
-            <h3>What We Do</h3>
+            <h3>Our Services</h3>
             <p>
-                Our services are designed to help businesses navigate the complexities of the modern digital landscape. Whether you're looking to build a new website, enhance your cybersecurity, or implement cutting-edge AI solutions, we're here to help you achieve your goals.
+                From connecting farmers with skilled workers to providing access to essential machinery, our platform is designed to streamline agricultural operations and support rural employment. We are here to help you achieve your agricultural goals with ease.
             </p>
         </div>
 
         <p class="about-footer">
-            Thank you for choosing us as your trusted partner. We look forward to working with you and helping you succeed!
+            Thank you for visiting Gram setu. We look forward to collaborating with you to advance rural employment and enhance agricultural productivity.
         </p>
     </div>
 {% endblock %}

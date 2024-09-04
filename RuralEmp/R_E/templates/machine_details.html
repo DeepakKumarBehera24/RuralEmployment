@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        .search-form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-form select,
+        .search-form input[type="text"],
+        .search-form button {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        .search-form button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <div class="container mt-1">
+        <h1 class="mb-4">Available Machines</h1>
+
+        <!-- Search and Filter Form -->
+        <form method="get" class="search-form mb-4">
+            <input type="text" name="machine_name" value="{{ request.GET.machine_name }}" placeholder="Machine Name" />
+            <input type="text" name="owner_name" value="{{ request.GET.owner_name }}" placeholder="Owner Name" />
+            <input type="number" name="charge_min" value="{{ request.GET.charge_min }}" placeholder="Min Charge" />
+            <input type="number" name="charge_max" value="{{ request.GET.charge_max }}" placeholder="Max Charge" />
+            <button type="submit">Filter</button>
+        </form>
+
+        <div class="row">
+            {% for machine in machines %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm" style="border-radius: 10px;">
+                    {% if machine.machineImage %}
+                        <img src="{{ machine.machineImage.url }}" class="card-img-top" alt="Machine Image" style="width:321px;height:200px;border-top-left-radius: 10px;border-top-right-radius: 10px;">
+                    {% else %}
+                        <img src="{% static 'default_machine_image.jpg' %}" class="card-img-top" alt="Default Image" style="width:321px;height:200px;border-top-left-radius: 10px;border-top-right-radius: 10px;">
+                    {% endif %}
+                    <div class="card-body text-center" style="color:black;">
+                        <h6 class="card-title mb-2">Owner Name: {{ machine.name }}</h6>
+                        <h4 class="card-title mb-2">{{ machine.machineAvailable }}</h4>
+                        <p class="card-text">
+                            <strong>Charge Per Day:</strong> ₹{{ machine.chargePerDay }}<br>
+<!--                            <strong>Phone Number:</strong> {{ machine.phoneNumber }}-->
+                        </p>
+                        <!-- Form to show interest -->
+                        <form action="{% url 'machine_details' machine.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="user_name_{{ machine.id }}">Your Name:</label>
+                                <input type="text" class="form-control" id="user_name_{{ machine.id }}" name="user_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_mobile_{{ machine.id }}">Your Mobile Number:</label>
+                                <input type="text" class="form-control" id="user_mobile_{{ machine.id }}" name="user_mobile" required>
+                            </div>
+                            <input type="hidden" name="machine_id" value="{{ machine.id }}">
+                            <br>
+                            <button class="btn btn-primary" type="submit">Interested</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No machines available.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

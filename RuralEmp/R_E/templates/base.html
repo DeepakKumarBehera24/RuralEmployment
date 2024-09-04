@@ -5,52 +5,119 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <title>My Site</title>
+    <style>
+        /* Footer styling */
+        a {
+            margin: 9px;
+        }
+        .footer {
+            background-color: #343a40;
+            color: black;
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-text {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        #navigation {
+            background-color: #00712D;
+        }
+
+        .nav-link.active, .nav-link.active:hover {
+            background-color: #508D4E;
+            border-radius: 15px;
+            color: #D6EFD8;
+            transition: background-color 1s ease-in-out, color 1s ease-in-out;
+        }
+
+        .nav-link.active:hover {
+            background-color: #D5ED9F !important;
+            color: #00712D !important;
+        }
+
+    </style>
 </head>
 <body>
-<div class="container">
-    <ul class="nav bg-info">
+<div class="container-fluid" style="color:white;padding:15px;background-color:#00712D;">
+    <ul class="nav" style="padding:5px;margin:10px;color:#D5ED9F;border-bottom:1px solid #FFFBE6;" id="navigation">
         <li>
-            <h1>RURAL EMPLOYMENT PORTAL</h1>
+            <h2 style="color:#FF9100;">RURAL EMPLOYMENT PORTAL</h2>
         </li>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <li class="nav-item">
-            <a class="nav-link link-light" href="/">HOME</a>
+            <a class="nav-link active" href="/" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+            <span>HOME</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link link-light" href="/about">About</a>
+            <a class="nav-link active" href="/about" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+                <span>About</span>
+            </a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-            <a class="nav-link link-light" href="/worker">Worker</a>
+            <a class="nav-link active" href="/worker" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+                <span>Worker</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link link-light" href="/job">Jobs</a>
+            <a class="nav-link active" href="/job" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+                <span>Jobs</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link link-light" href="/feedback">Feedback</a>
+            <a class="nav-link active" href="/feedback" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+                <span>Feedback</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link link-light" href="/logout">Logout</a>
+            <a class="nav-link active" href="{% url 'machine_list' %}" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">Machine Details</a></li>
+        <li class="nav-item">
+            <a class="nav-link active" href="/logout" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;transition:background-color 1s ease-in-out, color 1s ease-in-out;">
+                <span>Logout</span>
+            </a>
         </li>
         <li class="nav-item">
-        <span class="nav-link text-light">
-            Hi {{ user.username }} <!-- Display user's full name -->
-            <!-- Debugging: Check user object -->
-        </span>
-    </li>
+            <h4 style="margin:10px;margin-left:20px;background-color:#ECFFE6;color:#00712D;padding:5px;border-radius:5px;">Hi  &nbsp;&nbsp;{{ user.username }} </h4><!-- Display user's full name -->
+        </li>
         {% else %}
         <li class="nav-item">
-            <a class="nav-link link-light" href="/login">Login</a>
+            <a class="nav-link link-light active" href="/login" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;">
+                <span>Login</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link link-light" href="/signup">SignUp</a>
+            <a class="nav-link link-light" href="/signup" style="background-color:#508D4E;border-radius:15px;color:#D6EFD8;">
+                <span>SignUp</span>
+            </a>
         </li>
         {% endif %}
     </ul>
     {% block content %}
     <!-- Content will be injected here -->
     {% endblock %}
+    <!-- Footer Section -->
 </div>
+<footer class="footer">
+    <div class="container">
+        <p class="footer-text">
+            © 2024 Gram Setu. All Rights Reserved.
+        </p>
+    </div>
+</footer>
 </body>
 </html>

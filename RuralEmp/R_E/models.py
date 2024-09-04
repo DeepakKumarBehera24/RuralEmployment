@@ -24,16 +24,20 @@ class Signup(models.Model):
 
 
 class WorkerHead(models.Model):
+    id = models.AutoField(primary_key=True)  # Django adds this automatically
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=30, null=False)
     numberOfWorker = models.IntegerField(null=False)
     salaryPerDay = models.IntegerField(null=False)
     machineAvailable = models.CharField(max_length=300, null=False)
+    machineImage = models.ImageField(upload_to='machines/', null=True, blank=True)
+    chargePerDay = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     date = models.DateField(null=False)
     phoneNumber = models.BigIntegerField(null=False, default=1234567890)
+    email = models.EmailField(max_length=254, null=True, blank=True)  # New email field
 
     def __str__(self):
-        return f"{self.name}{self.phoneNumber}"
+        return f"{self.name} - {self.phoneNumber}"
 
 
 class Job(models.Model):

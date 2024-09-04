@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('signup/', views.signup, name='signup'),
@@ -17,4 +19,8 @@ urlpatterns = [
     path('job/<int:job_id>/delete/', views.delete_job, name='delete_job'),
     path('workerform/<int:workerhead_id>/', views.workerhead_form, name='edit_worker'),
     path('worker/<int:workerhead_id>/delete/', views.delete_worker, name='delete_worker'),
-]
+    path('machines/', views.machine_list, name='machine_list'),
+    path('machine/<int:machine_id>/details', views.machine_details, name='machine_details'),
+    path('success/', views.success_page, name='success_page'),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
