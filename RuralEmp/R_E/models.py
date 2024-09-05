@@ -35,6 +35,7 @@ class WorkerHead(models.Model):
     date = models.DateField(null=False)
     phoneNumber = models.BigIntegerField(null=False, default=1234567890)
     email = models.EmailField(max_length=254, null=True, blank=True)  # New email field
+    is_booked = models.BooleanField(default=False)  # New field to track booking status
 
     def __str__(self):
         return f"{self.name} - {self.phoneNumber}"
@@ -47,8 +48,9 @@ class Job(models.Model):
     place = models.CharField(max_length=50)
     price = models.IntegerField(null=False)
     date = models.DateField(null=False, default='2024-08-20')
+    days = models.IntegerField(null=False, default=0)
     timeSpan = models.TimeField(null=False)
-    phoneNumber = models.BigIntegerField(null=False, default=1234567890)
+    phoneNumber = models.BigIntegerField(null=False, default=None)
 
     def __str__(self):
         return f"{self.name}"
@@ -57,7 +59,7 @@ class Job(models.Model):
 class Feedback(models.Model):
     name = models.CharField(max_length=100)
     feedback = models.TextField()
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=5)  # Rating from 1 to 5
+    rating = models.IntegerField(choices=[(i, i) for i in range(0, 6)], default=0)  # Rating from 1 to 5
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

@@ -109,8 +109,10 @@
             <option value="name" {% if filter_by == 'name' %}selected{% endif %}>Name</option>
             <option value="machine" {% if filter_by == 'machine' %}selected{% endif %}>Machine Available</option>
             <option value="number_of_workers" {% if filter_by == 'number_of_workers' %}selected{% endif %}>Number of Workers</option>
-            <option value="salary" {% if filter_by == 'salary' %}selected{% endif %}>Salary per Day</option>
-            <!-- Add more filter options here if needed -->
+            <option value="salary_range_1" {% if filter_by == 'salary_range_1' %}selected{% endif %}>Salary (0-5000)</option>
+            <option value="salary_range_2" {% if filter_by == 'salary_range_2' %}selected{% endif %}>Salary (5000-20000)</option>
+            <option value="salary_range_3" {% if filter_by == 'salary_range_3' %}selected{% endif %}>Salary (20000-50000)</option>
+            <option value="salary_range_4" {% if filter_by == 'salary_range_4' %}selected{% endif %}>Salary (more than 50000)</option>
         </select>
         <input type="text" name="search" value="{{ search_query }}" placeholder="Search..." />
         <button type="submit">Search</button>

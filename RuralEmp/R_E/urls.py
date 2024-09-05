@@ -22,5 +22,6 @@ urlpatterns = [
     path('machines/', views.machine_list, name='machine_list'),
     path('machine/<int:machine_id>/details', views.machine_details, name='machine_details'),
     path('success/', views.success_page, name='success_page'),
+    path('toggle_booking/<int:worker_head_id>/', views.toggle_booking, name='toggle_booking'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

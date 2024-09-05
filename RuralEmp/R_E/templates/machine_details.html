@@ -2,83 +2,120 @@
 {% load static %}
 {% block content %}
     <style>
-        .search-form {
+        /* Styling for the machine list cards */
+        .card {
+            border-radius: 10px;
+            height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            margin-bottom: 20px;
         }
 
-        .search-form select,
-        .search-form input[type="text"],
-        .search-form button {
-            padding: 10px;
-            font-size: 16px;
-            margin-right: 10px;
-            border-radius: 4px;
+        .card-img-top {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .card-body {
+            text-align: center;
+            color: black;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 0.25rem;
             border: 1px solid #ced4da;
         }
 
-        .search-form button {
+        .btn {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.25rem;
             background-color: #007bff;
-            color: #fff;
+            color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
-        .search-form button:hover {
+        .btn:hover {
             background-color: #0056b3;
         }
+
+        /* Spacing for the search form */
+        .search-form {
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .form-row {
+            margin-bottom: 10px;
+        }
     </style>
-    <div class="container mt-1">
-        <h1 class="mb-4">Available Machines</h1>
 
-        <!-- Search and Filter Form -->
-        <form method="get" class="search-form mb-4">
-            <input type="text" name="machine_name" value="{{ request.GET.machine_name }}" placeholder="Machine Name" />
-            <input type="text" name="owner_name" value="{{ request.GET.owner_name }}" placeholder="Owner Name" />
-            <input type="number" name="charge_min" value="{{ request.GET.charge_min }}" placeholder="Min Charge" />
-            <input type="number" name="charge_max" value="{{ request.GET.charge_max }}" placeholder="Max Charge" />
-            <button type="submit">Filter</button>
-        </form>
-
+    <div class="container mt-4">
         <div class="row">
-            {% for machine in machines %}
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm" style="border-radius: 10px;">
-                    {% if machine.machineImage %}
-                        <img src="{{ machine.machineImage.url }}" class="card-img-top" alt="Machine Image" style="width:321px;height:200px;border-top-left-radius: 10px;border-top-right-radius: 10px;">
+            <div class="col-md-6">
+                {% if machine.machineImage %}
+                    <img src="{{ machine.machineImage.url }}" class="img-fluid" alt="Machine Image">
+                {% else %}
+                    <img src="{% static 'default_machine_image.jpg' %}" class="img-fluid" alt="Default Image">
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h1>{{ machine.name }}</h1>
+                <p><strong>Machine:</strong> {{ machine.machineAvailable }}</p>
+                <p><strong>Charge Per Day:</strong> ₹{{ machine.chargePerDay }}</p>
+                <p><strong>Phone Number:</strong> {{ machine.phoneNumber }}</p>
+                <p><strong>Date:</strong> {{ machine.date }}</p>
+
+                {% if user.is_authenticated %}
+                    {% if user == machine.user %}
+                        <!-- Button to toggle booking status -->
+                        <form method="post" action="{% url 'machine_details' machine.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="toggle_booking" class="btn btn-primary">
+                                {% if machine.is_booked %}Booked Complete{% else %}Mark as Booked{% endif %}
+                            </button>
+                        </form>
                     {% else %}
-                        <img src="{% static 'default_machine_image.jpg' %}" class="card-img-top" alt="Default Image" style="width:321px;height:200px;border-top-left-radius: 10px;border-top-right-radius: 10px;">
-                    {% endif %}
-                    <div class="card-body text-center" style="color:black;">
-                        <h6 class="card-title mb-2">Owner Name: {{ machine.name }}</h6>
-                        <h4 class="card-title mb-2">{{ machine.machineAvailable }}</h4>
-                        <p class="card-text">
-                            <strong>Charge Per Day:</strong> ₹{{ machine.chargePerDay }}<br>
-<!--                            <strong>Phone Number:</strong> {{ machine.phoneNumber }}-->
-                        </p>
-                        <!-- Form to show interest -->
-                        <form action="{% url 'machine_details' machine.id %}" method="POST">
+                        <!-- Form for users to express interest -->
+                        <form method="post" action="{% url 'machine_details' machine.id %}">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="user_name_{{ machine.id }}">Your Name:</label>
-                                <input type="text" class="form-control" id="user_name_{{ machine.id }}" name="user_name" required>
+                                <label for="user_name">Your Name:</label>
+                                <input type="text" name="user_name" id="user_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="user_mobile_{{ machine.id }}">Your Mobile Number:</label>
-                                <input type="text" class="form-control" id="user_mobile_{{ machine.id }}" name="user_mobile" required>
+                                <label for="user_mobile">Your Mobile Number:</label>
+                                <input type="text" name="user_mobile" id="user_mobile" class="form-control" required>
                             </div>
-                            <input type="hidden" name="machine_id" value="{{ machine.id }}">
-                            <br>
-                            <button class="btn btn-primary" type="submit">Interested</button>
+                            <button type="submit" class="btn btn-primary">Submit Interest</button>
                         </form>
-                    </div>
-                </div>
+                    {% endif %}
+                {% else %}
+                    <p><a href="{% url 'login' %}" class="btn btn-primary">Login to Express Interest</a></p>
+                {% endif %}
             </div>
-            {% empty %}
-            <p>No machines available.</p>
-            {% endfor %}
         </div>
     </div>
 {% endblock %}

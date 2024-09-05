@@ -1,77 +1,81 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <style>
-        /* Styling the form container */
-        *{
-        color: black;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+<style>
+    .container{
+        color:black;
+        background-color:white;
+        padding:20px;
+        border-radius:10px;
+    }
+</style>
+<div class="container my-5">
+    <h2 class="text-center mb-4">Add Worker Head</h2>
+    {% if error %}
+        <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        /* Styling the form header */
-        .form-container h2 {
-            text-align: center;
-            font-size: 28px;
-            color: #343a40;
-            margin-bottom: 20px;
-        }
+        <!-- User Field -->
+        <div class="mb-3">
+            <label for="user" class="form-label">User</label>
+            <select class="form-select" id="user" name="user">
+                {% for user in form.user.field.queryset %}
+                    <option value="{{ user.id }}" {% if user.id == form.user.value %}selected{% endif %}>
+                        {{ user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-        /* Styling the form fields */
-        .form-container form input[type="text"],
-        .form-container form input[type="number"],
-        .form-container form input[type="date"],
-        .form-container form select,
-        .form-container form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 16px;
-            color: #495057;
-        }
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ form.name.value }}">
+        </div>
 
-        /* Styling the submit button */
-        .form-container form button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+        <div class="mb-3">
+            <label for="numberOfWorker" class="form-label">Number of Workers</label>
+            <input type="number" class="form-control" id="numberOfWorker" name="numberOfWorker" value="{{ form.numberOfWorker.value }}">
+        </div>
 
-        .form-container form button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
+        <div class="mb-3">
+            <label for="salaryPerDay" class="form-label">Salary per Day</label>
+            <input type="number" class="form-control" id="salaryPerDay" name="salaryPerDay" value="{{ form.salaryPerDay.value }}">
+        </div>
 
-        /* Styling the error message */
-        .form-container .error-message {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-    </style>
+        <div class="mb-3">
+            <label for="machineAvailable" class="form-label">Machine Available</label>
+            <input type="text" class="form-control" id="machineAvailable" name="machineAvailable" value="{{ form.machineAvailable.value }}">
+        </div>
 
-    <div class="form-container">
-        <h2>Add Worker Head</h2>
-        {% if error %}
-            <p class="error-message">{{ error }}</p>
-        {% endif %}
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+        <div class="mb-3">
+            <label for="machineImage" class="form-label">Machine Image</label>
+            <input type="file" class="form-control" id="machineImage" name="machineImage">
+        </div>
+
+        <div class="mb-3">
+            <label for="chargePerDay" class="form-label">Charge per Day</label>
+            <input type="number" class="form-control" id="chargePerDay" name="chargePerDay" value="{{ form.chargePerDay.value }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" name="date" value="{{ form.date.value }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ form.phoneNumber.value }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+</div>
 {% endblock %}
+

@@ -5,7 +5,9 @@ from django.contrib.auth import authenticate, login
 from .models import Signup, Job, WorkerHead
 from django.http import HttpResponse
 from django.template import loader
+from django.views.decorators.http import require_POST
 import smtplib
+from django.db.models import Q
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.http import JsonResponse
@@ -145,10 +147,12 @@ def jobform(request, job_id=None):
             job.save()
             return redirect('/job')
         else:
-            return render(request, 'jobform.html', {'form': form, 'error': 'There was an error with your submission.'})
+            users = User.objects.all()  # Fetch all users to pass to the template
+            return render(request, 'jobform.html', {'form': form, 'error': 'There was an error with your submission.', 'users': users})
     else:
         form = MyJobs(instance=job)
-    return render(request, 'jobform.html', {'form': form})
+        users = User.objects.all()  # Fetch all users to pass to the template
+    return render(request, 'jobform.html', {'form': form, 'users': users})
 
 
 @login_required
@@ -157,6 +161,16 @@ def workerhead_list(request):
     filter_by = request.GET.get('filter_by', '')
 
     workerheads = WorkerHead.objects.all()
+
+    if filter_by.startswith('salary_range_'):
+        if filter_by == 'salary_range_1':
+            workerheads = workerheads.filter(salaryPerDay__range=(0, 5000))
+        elif filter_by == 'salary_range_2':
+            workerheads = workerheads.filter(salaryPerDay__range=(5000, 20000))
+        elif filter_by == 'salary_range_3':
+            workerheads = workerheads.filter(salaryPerDay__range=(20000, 50000))
+        elif filter_by == 'salary_range_4':
+            workerheads = workerheads.filter(salaryPerDay__gt=50000)
 
     if search_query:
         if filter_by == 'name':
@@ -189,11 +203,10 @@ def workerhead_list(request):
                         workerheads = WorkerHead.objects.none()  # No valid combination found
             else:
                 workerheads = WorkerHead.objects.none()  # Invalid input, return no results
-        elif filter_by == 'salary':
-            if search_query.isdigit():
-                workerheads = workerheads.filter(salaryPerDay__lte=int(search_query))
-            else:
-                workerheads = WorkerHead.objects.none()
+        elif filter_by == 'name':
+            workerheads = workerheads.filter(name__icontains=search_query)
+        elif filter_by == 'machine':
+            workerheads = workerheads.filter(machineAvailable__icontains=search_query)
 
     template = loader.get_template('worker.html')
     context = {
@@ -266,6 +279,7 @@ def delete_job(request, job_id):
     return render(request, 'confirm_delete.html', {'object': job})
 
 
+@login_required
 def machine_list(request):
     # Get filter parameters from GET request
     machine_name = request.GET.get('machine_name', '').strip()
@@ -275,6 +289,13 @@ def machine_list(request):
 
     # Start with all machines
     machines = WorkerHead.objects.all()
+
+    # Filter based on booking status
+    if not request.user.is_authenticated:
+        machines = machines.filter(is_booked=False)
+    else:
+        # Allow authenticated users to see their own booked machines
+        machines = machines.filter(Q(is_booked=False) | Q(user=request.user))
 
     # Apply filters based on user input
     if machine_name:
@@ -292,58 +313,78 @@ def machine_list(request):
     context = {
         'machines': machines
     }
-    return render(request, 'machine_details.html', context)
-
+    return render(request, 'machine_list.html', context)
 
 
 @login_required
 def machine_details(request, machine_id):
-    try:
-        machine = WorkerHead.objects.get(id=machine_id)
-    except WorkerHead.DoesNotExist:
-        return HttpResponse("Machine not found", status=404)
+    machine = get_object_or_404(WorkerHead, id=machine_id)
 
     if request.method == 'POST':
-        user_name = request.POST.get('user_name', 'Anonymous')
-        user_mobile = request.POST.get('user_mobile', 'N/A')
+        if 'toggle_booking' in request.POST:
+            if request.user == machine.user:
+                machine.is_booked = not machine.is_booked
+                machine.save()
+                return redirect('machine_list')
 
-        try:
-            # Email configuration
-            smtp_server = 'smtp.gmail.com'
-            smtp_port = 587
-            smtp_user = 'deepakjgrt99@gmail.com'  # Replace with your email address
-            smtp_password = 'xzwyqnyirctezpti'  # Replace with your app password
+        if 'user_name' in request.POST and 'user_mobile' in request.POST:
+            user_name = request.POST.get('user_name', 'Anonymous')
+            user_mobile = request.POST.get('user_mobile', 'N/A')
 
-            # Create the email
-            msg = MIMEMultipart()
-            msg['From'] = smtp_user
-            msg['To'] = machine.email
-            msg['Subject'] = 'Interest in Your Machine'
+            try:
+                # SMTP Email configuration
+                smtp_server = 'smtp.gmail.com'
+                smtp_port = 587
+                smtp_user = 'deepakjgrt99@gmail.com'  # Replace with your email
+                smtp_password = 'xzwyqnyirctezpti'  # Replace with your app password
 
-            # Email body with user's information
-            body = f'''
-            A user has shown interest in your machine.
+                # Create the email message
+                msg = MIMEMultipart()
+                msg['From'] = smtp_user
+                msg['To'] = machine.email
+                msg['Subject'] = 'Interest in Your Machine'
 
-            User's Name: {user_name}
-            User's Mobile Number: {user_mobile}
-            '''
-            msg.attach(MIMEText(body, 'plain'))
+                body = f'''
+                A user has shown interest in your machine.
 
-            # Send the email
-            with smtplib.SMTP(smtp_server, smtp_port) as server:
-                server.starttls()  # Upgrade the connection to a secure encrypted SSL/TLS connection
-                server.login(smtp_user, smtp_password)
-                server.sendmail(msg['From'], msg['To'], msg.as_string())
+                User's Name: {user_name}
+                User's Mobile Number: {user_mobile}
+                '''
+                msg.attach(MIMEText(body, 'plain'))
 
-            return redirect('success_page')
-        except smtplib.SMTPAuthenticationError as e:
-            return HttpResponse(f"SMTP Authentication Error: {e}", status=500)
-        except Exception as e:
-            return HttpResponse(f"An error occurred: {e}", status=500)
+                # Connect to the SMTP server and send the email
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                    server.starttls()  # Secure the connection
+                    server.login(smtp_user, smtp_password)
+                    server.sendmail(msg['From'], msg['To'], msg.as_string())
+                return redirect('success_page')
+                # Redirect to success page or back to the machine details page
+                # return redirect('machine_details', machine_id=machine_id)
 
-    return render(request, 'machine_list.html')
+            except smtplib.SMTPAuthenticationError as e:
+                return HttpResponse(f"SMTP Authentication Error: {e}", status=500)
+
+            except Exception as e:
+                return HttpResponse(f"An error occurred: {e}", status=500)
+
+    return render(request, 'machine_details.html', {'machine': machine})
 
 
 def success_page(request):
     return render(request, 'success.html')
+
+
+@login_required
+def toggle_booking(request, worker_head_id):
+    try:
+        machine = WorkerHead.objects.get(id=worker_head_id)
+    except WorkerHead.DoesNotExist:
+        return HttpResponse("Machine not found", status=404)
+
+    # Toggle booking status
+    machine.is_booked = not machine.is_booked
+    machine.save()
+
+    return redirect('machine_list')  # Redirect to the list or detail page
+
 

@@ -121,8 +121,8 @@
         <option value="price_range_2" {% if filter_by == 'price_range_2' %}selected{% endif %}>Price (5000-20000)</option>
         <option value="price_range_3" {% if filter_by == 'price_range_3' %}selected{% endif %}>Price (20000-50000)</option>
         <option value="price_range_4" {% if filter_by == 'price_range_4' %}selected{% endif %}>Price (more than 50000)</option>
-        <option value="date" {% if filter_by == 'date' %}selected{% endif %}>Date</option>
-        <option value="timeSpan" {% if filter_by == 'timeSpan' %}selected{% endif %}>Time Span</option>
+<!--        <option value="date" {% if filter_by == 'date' %}selected{% endif %}>Date</option>-->
+<!--        <option value="timeSpan" {% if filter_by == 'timeSpan' %}selected{% endif %}>Time Span</option>-->
         <option value="phoneNumber" {% if filter_by == 'phoneNumber' %}selected{% endif %}>Phone Number</option>
     </select>
     <input type="text" name="search" value="{{ search_query }}" placeholder="Search..." />
@@ -144,8 +144,9 @@
             <p><strong>Name:</strong> {{ j.name }}</p>
             <p><strong>Description:</strong> {{ j.jobDescription }}</p>
             <p><strong>Place:</strong> {{ j.place }}</p>
-            <p><strong>Price:</strong> {{ j.price }}</p>
-            <p><strong>Last Date:</strong> {{ j.date }}</p>
+            <p><strong>Price:</strong> {{ j.days }}</p>
+            <p><strong>Start Date:</strong> {{ j.date }}</p>
+            <p><strong>Number of Days:</strong> {{ j.price }}</p>
 <!--            <p><strong>Time Span:</strong> {{ j.timeSpan }}</p>-->
             <p><strong>Phone Number:</strong> {{ j.phoneNumber }}</p>
             {% if j.user == request.user %}

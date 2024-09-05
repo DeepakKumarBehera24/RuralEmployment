@@ -2,76 +2,80 @@
 
 {% block content %}
     <style>
-        /* Styling the form container */
-        *{
-        color: black;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Styling the form header */
-        .form-container h2 {
-            text-align: center;
-            font-size: 28px;
-            color: #343a40;
-            margin-bottom: 20px;
-        }
-
-        /* Styling the form fields */
-        .form-container form input[type="text"],
-        .form-container form input[type="number"],
-        .form-container form input[type="date"],
-        .form-container form select,
-        .form-container form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 16px;
-            color: #495057;
-        }
-
-        /* Styling the submit button */
-        .form-container form button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .form-container form button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        /* Styling the error message */
-        .form-container .error-message {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
+        .form-container{
+            color:black;
         }
     </style>
+    <div class="container mt-5">
+        <div class="form-container shadow p-4 rounded bg-light">
+            <h2 class="text-center mb-4">Job Details</h2>
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
 
-    <div class="form-container">
-        <h2>Job Details</h2>
-        {% if error %}
-            <p class="error-message">{{ error }}</p>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Submit</button>
-        </form>
+                <!-- User Field (Only include if admin or relevant) -->
+                <div class="form-group mb-3">
+                    <label for="id_user" class="form-label">User</label>
+                    <select id="id_user" name="user" class="form-control">
+                        {% for u in users %}
+                            <option value="{{ u.id }}" {% if form.instance.user and form.instance.user.id == u.id %}selected{% endif %}>{{ u.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Name Field -->
+                <div class="form-group mb-3">
+                    <label for="id_name" class="form-label">Job Provider Name</label>
+                    <input type="text" id="id_name" name="name" class="form-control" value="{{ form.name.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- Job Description Field -->
+                <div class="form-group mb-3">
+                    <label for="id_jobDescription" class="form-label">Job Description</label>
+                    <textarea id="id_jobDescription" name="jobDescription" class="form-control" rows="4">{{ form.jobDescription.value|default_if_none:'' }}</textarea>
+                </div>
+
+                <!-- Place Field -->
+                <div class="form-group mb-3">
+                    <label for="id_place" class="form-label">Place</label>
+                    <input type="text" id="id_place" name="place" class="form-control" value="{{ form.place.value|default_if_none:'' }}">
+                </div>
+
+                <!-- Price Field -->
+                <div class="form-group mb-3">
+                    <label for="id_price" class="form-label">Number of days to complete</label>
+                    <input type="number" id="id_price" name="price" class="form-control" value="{{ form.price.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- Date Field -->
+                <div class="form-group mb-3">
+                    <label for="id_date" class="form-label">Date</label>
+                    <input type="date" id="id_date" name="date" class="form-control" value="{{ form.date.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- Days Field -->
+                <div class="form-group mb-3">
+                    <label for="id_days" class="form-label">Price</label>
+                    <input type="number" id="id_days" name="days" class="form-control" value="{{ form.days.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- TimeSpan Field -->
+                <div class="form-group mb-3">
+                    <label for="id_timeSpan" class="form-label">Time Span</label>
+                    <input type="time" id="id_timeSpan" name="timeSpan" class="form-control" value="{{ form.timeSpan.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- PhoneNumber Field -->
+                <div class="form-group mb-4">
+                    <label for="id_phoneNumber" class="form-label">Phone Number</label>
+                    <input type="tel" id="id_phoneNumber" name="phoneNumber" class="form-control" value="{{ form.phoneNumber.value|default_if_none:'' }}" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
