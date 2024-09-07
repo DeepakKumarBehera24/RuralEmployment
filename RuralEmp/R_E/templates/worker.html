@@ -19,6 +19,8 @@
         .add-worker-button:hover {
             background-color: #218838;
             transform: scale(1.05);
+            background-color: darkgreen;
+            color:white;
         }
 
         /* Styling the worker head list */
@@ -74,6 +76,9 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
+            background-color:#D5ED9F;
+            padding:30px;
+            border-radius:20px;
         }
 
         .search-form select,
@@ -103,7 +108,7 @@
     <a href="{% url 'workform' %}" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
 
     <!-- Search and Filter Form -->
-    <form method="get" class="search-form">
+    <form method="get" class="search-form" >
         <select name="filter_by">
             <option value="" {% if not filter_by %}selected{% endif %}>Filter by</option>
             <option value="name" {% if filter_by == 'name' %}selected{% endif %}>Name</option>

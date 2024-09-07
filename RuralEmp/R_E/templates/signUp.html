@@ -3,7 +3,12 @@
 {% load form_filters %}
 
 {% block content %}
-    <div class="container" style="padding:20px;">
+<style>
+    .form-group{
+        margin:20px;
+    }
+</style>
+    <div class="container" style="padding:50px;background-color:#D5ED9F;color:black;border-radius:20px;font-weight:bold;width:80%;">
         <h2 class="text-center">Sign Up</h2>
         <form method="post" class="form-signup">
             {% csrf_token %}
