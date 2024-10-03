@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Complete Your Payment</h2>
+    <script>
+        var options = {
+            "key": "{{ payment.key_id }}", // Your Razorpay key ID
+            "amount": "{{ payment.amount }}", // Amount in paise
+            "currency": "INR",
+            "name": "Your Company Name",
+            "description": "Subscription Payment",
+            "order_id": "{{ payment.order_id }}", // Order ID created by Razorpay
+            "handler": function (response){
+                // Handle payment success
+                alert("Payment successful!");
+
+                // Optionally send payment details to your server to update subscription status
+                fetch('/payment-success/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                    if (data.success) {
+                        window.location.href = '/home'; // Redirect to the home or success page
+                    }
+                });
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open(); // Open Razorpay payment window when the page loads
+    </script>
+</body>
+</html>

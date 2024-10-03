@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="color:#00712D;max-width: 600px; margin: 50px auto; background-color: #D5ED9F; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); color:#00712D;">
+<style>
+    body{
+        background-color:white;
+    }
+</style>
+<div style="color:white;max-width: 600px; margin: 50px auto; background-image : linear-gradient(green, darkgreen, green); border-radius: 8px; padding: 20px; box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.1); color:#white;">
     <h2 style="text-align: center; margin-bottom: 20px;">Contact Us</h2>
     <form method="post">
         {% csrf_token %}
@@ -18,7 +23,7 @@
             {{ form.message }}
         </div>
         <div style="text-align: center;">
-            <button type="submit" style="background-color: #ffffff; color: #00712D; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Submit</button>
+            <button type="submit" style="background-color: white; color: black; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;font-weight:bolder;">Submit</button>
         </div>
     </form>
 </div>

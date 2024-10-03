@@ -113,6 +113,8 @@
     {% endblock %}
     <!-- Footer Section -->
 </div>
+
+
 <footer class="footer">
     <div class="container">
         <p class="footer-text">
@@ -120,5 +122,39 @@
         </p>
     </div>
 </footer>
+
+<div class="container mt-5">
+    <h4>Ask your question:</h4>
+    <p class="chat-hint">Try asking questions like: 'Job postings', 'How to post a job', or 'Contact support'.</p>
+    <form id="chat-form">
+        <textarea id="message-input" class="form-control" placeholder="Ask a question..." rows="3"></textarea><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br>
+    <div id="chat-response" class="alert alert-info" style="display:none;"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#chat-form').on('submit', function(event) {
+        event.preventDefault();
+        var userMessage = $('#message-input').val();
+        $.ajax({
+            type: 'POST',
+            url: '/chatbot/',
+            data: {
+                'message': userMessage,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                $('#chat-response').text(response.response).show();
+            },
+            error: function() {
+                $('#chat-response').text('An error occurred. Please try again.').show();
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

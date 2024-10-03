@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
+from datetime import timedelta
+from django.utils import timezone
 
 
 class Signup(models.Model):
@@ -59,7 +61,8 @@ class Job(models.Model):
 class Feedback(models.Model):
     name = models.CharField(max_length=100)
     feedback = models.TextField()
-    rating = models.IntegerField(choices=[(i, i) for i in range(0, 6)], default=0)  # Rating from 1 to 5
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1)  # Rating from 1 to 5
+    # (1 is the lowest and 5 is the highest rating here)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -74,5 +77,37 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"Contact from {self.name} on {self.date}"
+
+
+class Subscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_trial = models.BooleanField(default=True)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    subscription_type = models.CharField(max_length=20, choices=[
+        ('7_days', '7-Day Trial'),
+        ('1_month', '1 Month'),
+        ('6_months', '6 Months'),
+        ('1_year', '1 Year'),
+        ('lifetime', 'Lifetime')
+    ])
+
+    def is_active(self):
+        if self.subscription_type == 'lifetime':
+            return True
+        return self.end_date and timezone.now() <= self.end_date
+
+    def set_trial(self):
+        self.start_date = timezone.now()
+        self.end_date = timezone.now() + timedelta(days=7)
+        self.is_trial = True
+
+    def set_subscription(self, duration_days):
+        self.start_date = timezone.now()
+        self.end_date = timezone.now() + timedelta(days=duration_days)
+        self.is_trial = False
+
+
+
 
 

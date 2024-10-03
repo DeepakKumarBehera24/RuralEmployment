@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.rating.id_for_label }}" class="form-label">Rating</label>
+                        <label for="{{ form.rating.id_for_label }}" class="form-label">Rating ( Note : <strong>1</strong> is the lowest and <strong>5</strong> is the highest )</label>
                         <select name="rating" id="{{ form.rating.id_for_label }}" class="form-select">
                             {% with value=0 %}
                             {% for value, display in form.rating.field.choices %}

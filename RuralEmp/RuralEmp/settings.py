@@ -57,7 +57,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+RAZORPAY_KEY_ID = 'rzp_test_jGyMeB2Rs1A4pB'
+RAZORPAY_KEY_SECRET = 'BIq3tsmYmsWTCHwGLZp9Tn7f'
 ROOT_URLCONF = 'RuralEmp.urls'
 
 TEMPLATES = [
@@ -136,7 +137,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # settings.py
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
