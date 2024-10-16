@@ -48,8 +48,8 @@
             padding: 0.5rem 1.5rem;
             font-size: 1rem;
             border-radius: 0.25rem;
-            background-color: #007bff;
-            color: white;
+            background-color: orange;
+            color: #FDFFD2;
             border: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -57,6 +57,23 @@
 
         .btn:hover {
             background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: red;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: darkred;
+        }
+
+        .container {
+            padding: 20px;
+            background-color: #399918;
+            border-radius: 10px;
+            margin-top: 20px;
+            color:#ECFFE6;
         }
 
         /* Spacing for the search form */
@@ -86,16 +103,20 @@
                 <p><strong>Machine:</strong> {{ machine.machineAvailable }}</p>
                 <p><strong>Charge Per Day:</strong> ₹{{ machine.chargePerDay }}</p>
                 <p><strong>Phone Number:</strong> {{ machine.phoneNumber }}</p>
-<!--                <p><strong>Date:</strong> {{ machine.date }}</p>-->
 
                 {% if user.is_authenticated %}
                     {% if user == machine.user %}
-                        <!-- Button to toggle booking status -->
+                        <!-- Form for toggling booking status -->
                         <form method="post" action="{% url 'machine_details' machine.id %}">
                             {% csrf_token %}
+                            <!-- Mark as Booked or Release button -->
                             <button type="submit" name="toggle_booking" class="btn btn-primary">
-                                {% if machine.is_booked %}Booked Complete{% else %}Mark as Booked{% endif %}
+                                {% if machine.is_booked %} Release {% else %} Mark as Booked {% endif %}
                             </button>
+                            <!-- Cancel Booking button will appear only if the machine is booked -->
+                            {% if machine.is_booked %}
+                                <button type="submit" name="cancel_booking" class="btn btn-danger">Cancel Booking</button>
+                            {% endif %}
                         </form>
                     {% else %}
                         <!-- Form for users to express interest -->
@@ -119,3 +140,4 @@
         </div>
     </div>
 {% endblock %}
+

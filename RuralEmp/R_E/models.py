@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.utils import timezone
 
 
@@ -53,9 +53,16 @@ class Job(models.Model):
     days = models.IntegerField(null=False, default=0)
     timeSpan = models.TimeField(null=False)
     phoneNumber = models.BigIntegerField(null=False, default=None)
+    work_done = models.BooleanField(default=False)  # New field for tracking if work is marked as done
 
     def __str__(self):
         return f"{self.name}"
+
+    @property
+    def is_expired(self):
+        """Check if the job has expired based on the date and number of days."""
+        job_end_date = datetime.combine(job.date, datetime.min.time()) + timedelta(days=job.days)
+        return job_end_date < timezone.now().date()
 
 
 class Feedback(models.Model):

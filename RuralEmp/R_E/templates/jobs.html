@@ -145,27 +145,33 @@
     <h1>Jobs Available</h1>
     <ul class="job-list">
         {% for j in myjob %}
-        <li>
-            <h3>Job {{ forloop.counter }}</h3>
-            <p><strong>Name:</strong> {{ j.name }}</p>
-            <p><strong>Description:</strong> {{ j.jobDescription }}</p>
-            <p><strong>Place:</strong> {{ j.place }}</p>
-            <p><strong>Price:</strong> {{ j.days }}</p>
-            <p><strong>Start Date:</strong> {{ j.date }}</p>
-            <p><strong>Number of Days:</strong> {{ j.price }}</p>
-<!--            <p><strong>Time Span:</strong> {{ j.timeSpan }}</p>-->
-            <p><strong>Phone Number:</strong> {{ j.phoneNumber }}</p>
-            {% if j.user == request.user %}
-                <a href="{% url 'edit_job' j.id %}">Edit</a>
-                <a href="{% url 'delete_job' j.id %}" onclick="return confirm('Are you sure?');">Delete</a>
-            {% endif %}
-            <!-- Job Status Indicator -->
-            {% if j.status == 'done' %}
-                <span class="job-status done">&#10004; <!-- Red Tick Mark --></span>
-            {% else %}
-                <span class="job-status available">&#9679; <!-- Green Circle --></span>
-            {% endif %}
-        </li>
-        {% endfor %}
+    <li>
+        <h3>Job {{ forloop.counter }}</h3>
+        <p><strong>Name:</strong> {{ j.name }}</p>
+        <p><strong>Description:</strong> {{ j.jobDescription }}</p>
+        <p><strong>Place:</strong> {{ j.place }}</p>
+        <p><strong>Price:</strong> {{ j.price }}</p>
+        <p><strong>Start Date:</strong> {{ j.date }}</p>
+        <p><strong>Number of Days:</strong> {{ j.days }}</p>
+        <p><strong>Phone Number:</strong> {{ j.phoneNumber }}</p>
+
+        {% if j.user == request.user %}
+            <a href="{% url 'edit_job' j.id %}">Edit</a>
+            <a href="{% url 'delete_job' j.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+            <form action="{% url 'mark_done' j.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Work Done</button>
+            </form>
+        {% endif %}
+
+        <!-- Job Status Indicator -->
+        {% if j.status == 'done' %}
+            <span class="job-status done">&#10004; Not Available</span>
+        {% else %}
+            <span class="job-status available">&#9679; Available</span>
+        {% endif %}
+    </li>
+{% endfor %}
+
     </ul>
 {% endblock %}

@@ -1,5 +1,7 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
@@ -10,9 +12,10 @@ from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.http import require_POST
 import smtplib
+from datetime import datetime, timedelta
+from django.utils import timezone
 from django.conf import settings
 import razorpay
-import openai
 from razorpay.errors import SignatureVerificationError
 from django.conf import settings
 from django.http import JsonResponse
@@ -96,13 +99,14 @@ def job(request):
     search_query = request.GET.get('search', '').strip()
     filter_by = request.GET.get('filter_by', '')
 
-    myjob = Job.objects.all()
-    current_time = datetime.now()
+    # Only display jobs that are not marked as done and haven't expired
+    myjob = Job.objects.filter(work_done=False)
+    current_time = timezone.now()
 
     # Determine the status of each job
     for job in myjob:
-        job_end_time = datetime.combine(job.date, job.timeSpan)
-        if current_time > job_end_time:
+        job_end_time = job.date + timedelta(days=job.days)  # Calculate end date
+        if current_time.date() > job_end_time:
             job.status = 'done'
         else:
             job.status = 'available'
@@ -112,31 +116,7 @@ def job(request):
         myjob = myjob.filter(name__icontains=search_query)
     elif filter_by == 'place':
         myjob = myjob.filter(place__icontains=search_query)
-    elif filter_by == 'price_range_1':
-        myjob = myjob.filter(price__gte=0, price__lte=5000)
-    elif filter_by == 'price_range_2':
-        myjob = myjob.filter(price__gt=5000, price__lte=20000)
-    elif filter_by == 'price_range_3':
-        myjob = myjob.filter(price__gt=20000, price__lte=50000)
-    elif filter_by == 'price_range_4':
-        myjob = myjob.filter(price__gt=50000)
-    elif filter_by == 'date':
-        try:
-            search_date = datetime.strptime(search_query, '%Y-%m-%d').date()
-            myjob = myjob.filter(date__iexact=search_date)
-        except ValueError:
-            myjob = Job.objects.none()
-    elif filter_by == 'timeSpan':
-        try:
-            search_time = datetime.strptime(search_query, '%H:%M').time()
-            myjob = myjob.filter(timeSpan__iexact=search_time)
-        except ValueError:
-            myjob = Job.objects.none()
-    elif filter_by == 'phoneNumber':
-        if search_query.isdigit():
-            myjob = myjob.filter(phoneNumber__exact=int(search_query))
-        else:
-            myjob = Job.objects.none()
+    # Additional filters can be added here
 
     template = loader.get_template('jobs.html')
     context = {
@@ -145,6 +125,15 @@ def job(request):
         'filter_by': filter_by,
     }
     return HttpResponse(template.render(context, request))
+
+
+@login_required
+def mark_done(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    if request.user == job.user:
+        job.work_done = True
+        job.save()
+    return redirect('job')  # Redirect to the jobs list after marking done# Redirect to the job listing page
 
 
 @login_required
@@ -339,6 +328,13 @@ def machine_details(request, machine_id):
         if 'toggle_booking' in request.POST:
             if request.user == machine.user:
                 machine.is_booked = not machine.is_booked
+                machine.save()
+                return redirect('machine_list')
+
+        # Admin can cancel the booking (this part will only appear after booking)
+        if 'cancel_booking' in request.POST:
+            if request.user == machine.user and machine.is_booked:
+                machine.is_booked = False
                 machine.save()
                 return redirect('machine_list')
 
@@ -565,7 +561,8 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-openai.api_key = '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'
+# openai.api_key = 'sk-proj-oQKbl6LhOKOch4ey1PHzAK9SWGwtivFlrgATW_iwabYji3jYH49aBp1oWYwjlx2
+# -s4z3o5upFST3BlbkFJ6zyS1u3vjxFy24QWdmuyVWGoJ9WcijuDArtkPUB9LObxdMsTADqVBgf8kS_iJgRaMu9IBVnLEA'
 
 # Initialize tokenizer and model globally
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
@@ -575,15 +572,16 @@ model = GPT2LMHeadModel.from_pretrained("gpt2")
 @csrf_exempt
 def chatbot(request):
     if request.method == 'POST':
-        user_message = request.POST.get('message')
+        user_message = request.POST.get('message').strip().lower()
 
+        # Dictionary of predefined responses
         responses = {
             'job postings': 'We have various job postings available. You can view them on the Jobs page.',
             'worker details': 'You can find worker details on the Worker Head page.',
             'machine details': 'Machine details can be found on the Machine List page.',
             'feedback': 'You can provide feedback on the Feedback page.',
             'subscription': 'For subscription details, please visit the Subscription page.',
-            'contact support': 'For support, please contact us at support@gramsetu.com.',
+            'contact support': 'For support, please contact us at 9777256310',
             'how to post a job': 'To post a job, go to the Jobs page and click on "Post Job".',
             'how to hire a worker': 'To hire a worker, visit the Worker Head page and select a worker.',
             'how to rent a machine': 'Machine rental details are available on the Machine List page.',
@@ -597,17 +595,19 @@ def chatbot(request):
                                  'features.',
             'forgot password': 'If you forgot your password, use the "Forgot Password" link on the login page.',
             'how to update profile': 'Update your profile details by visiting your account settings page.',
-            'how to delete account': 'To delete your account, please contact support at support@gramsetu.com.',
+            'how to delete account': 'To delete your account, please contact support at deepakjgrt99@gmail.com',
             'privacy policy': 'Read our privacy policy on the Privacy Policy page.',
             'terms and conditions': 'Our terms and conditions can be found on the Terms page.',
-            'how to contact us': 'Contact us via email at support@gramsetu.com or through our contact form.',
+            'how to contact us': 'Contact us via email at deepakjgrt99@gmail.com or through our contact form.',
             'how to use the website': 'Explore different pages to learn about job postings, worker details, and more.',
-            'technical issues': 'For technical issues, please reach out to our support team at support@gramsetu.com.',
+            'technical issues': 'For technical issues, please reach out to our support team at deepakjgrt99@gmail.com.',
             'new features': 'Stay tuned to our website for updates on new features and improvements.',
         }
 
-        response_message = responses.get(user_message.lower(), "Sorry, I didn't understand that.")
+        # Return the corresponding response, or a default message if the input doesn't match any key
+        response_message = responses.get(user_message, "Sorry, I didn't understand that. Can you try rephrasing?")
 
         return JsonResponse({'response': response_message})
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+    # For non-POST requests, return an error
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

@@ -7,6 +7,51 @@
     <title>My Site</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
+        /* Floating Icon Styling */
+        .floating-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: orange;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .floating-icon i {
+            font-size: 24px;
+        }
+
+        /* Ask Question Container Styling */
+        .ask-question-section {
+        position: fixed;
+        bottom: 80px;
+        right: 70px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        width: 900px;
+        height: 1200px;  /* Set a fixed height */
+        max-height: 70vh; /* Restrict max height to 70% of the viewport height */
+        overflow-y: auto; /* Enable vertical scrolling */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        z-index: 999;
+    }
+        /* Close Button Styling */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
         /* Footer styling */
         a {
             margin: 9px;
@@ -114,6 +159,119 @@
     <!-- Footer Section -->
 </div>
 
+<!-- Floating Help Icon -->
+<div id="ask-question-icon" class="floating-icon">
+    <i class="fas fa-comment"></i>
+</div>
+
+<!-- Ask Question Container -->
+<!-- Ask Question Container -->
+<div id="ask-question-section" class="ask-question-section" style="display:none;">
+    <h4>Ask your question:</h4>
+    <p class="chat-hint">Try asking questions like:</p>
+    <ul>
+        <li>job postings</li>
+        <li>worker details</li>
+        <li>machine details</li>
+        <li>feedback</li>
+        <li>subscription</li>
+        <li class="more-questions" style="display:none;">contact support</li>
+        <li class="more-questions" style="display:none;">how to post a job</li>
+        <li class="more-questions" style="display:none;">how to hire a worker</li>
+        <li class="more-questions" style="display:none;">how to rent a machine</li>
+        <li class="more-questions" style="display:none;">subscription plans</li>
+        <li class="more-questions" style="display:none;">website features</li>
+        <li class="more-questions" style="display:none;">pricing</li>
+        <li class="more-questions" style="display:none;">how to leave feedback</li>
+        <li class="more-questions" style="display:none;">about us</li>
+        <li class="more-questions" style="display:none;">user registration</li>
+        <li class="more-questions" style="display:none;">forgot password</li>
+        <li class="more-questions" style="display:none;">how to update profile</li>
+        <li class="more-questions" style="display:none;">how to delete account</li>
+        <li class="more-questions" style="display:none;">privacy policy</li>
+        <li class="more-questions" style="display:none;">terms and conditions</li>
+        <li class="more-questions" style="display:none;">how to contact us</li>
+        <li class="more-questions" style="display:none;">how to use the website</li>
+        <li class="more-questions" style="display:none;">technical issues</li>
+        <li class="more-questions" style="display:none;">new features</li>
+    </ul>
+    <a href="#" id="see-more" style="color: #007bff; cursor: pointer;">See More</a>
+    <br>
+    <a href="#" id="see-less" style="color: #007bff; cursor: pointer; display:none;">See Less</a> <!-- See Less Button -->
+    <br>
+    <form id="chat-form">
+        <textarea id="message-input" class="form-control" placeholder="Ask a question..." rows="3"></textarea>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br>
+    <div id="chat-response" class="alert alert-info" style="display:none;"></div>
+</div>
+
+
+
+    <!-- Inline Script with Debugging -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+    // Toggle visibility of the ask question section
+    $('#ask-question-icon').on('click', function() {
+        $('#ask-question-section').toggle();  // Toggle visibility of help section
+    });
+
+    // "See More" functionality
+    $('#see-more').on('click', function(event) {
+        event.preventDefault();
+        $('.more-questions').show();  // Show the hidden questions
+        $(this).hide();  // Hide the "See More" link
+        $('#see-less').show(); // Show the "See Less" link
+    });
+
+    // "See Less" functionality
+    $('#see-less').on('click', function(event) {
+        event.preventDefault();
+        $('.more-questions').hide();  // Hide all additional questions
+        $('#see-more').show();  // Show the "See More" link again
+        $(this).hide(); // Hide the "See Less" link
+    });
+
+    // Handle form submission for asking a question
+    $('#chat-form').on('submit', function(event) {
+        event.preventDefault();  // Prevent default form submission
+        var userMessage = $('#message-input').val().trim();  // Trim user input
+
+        // Ensure user enters a message
+        if (userMessage === "") {
+            alert("Please enter a message.");
+            return;
+        }
+
+        // AJAX request to the chatbot view
+        $.ajax({
+            type: 'POST',
+            url: '/chatbot/',  // URL where your Django view is handling chatbot requests
+            data: {
+                'message': userMessage,  // Send user message
+                'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF token for security in Django
+            },
+            success: function(response) {
+                $('#chat-response').text(response.response).show();  // Display the chatbot response
+                $('#message-input').val('');  // Clear input field
+            },
+            error: function() {
+                $('#chat-response').text('An error occurred. Please try again.').show();  // Show error
+            }
+        });
+    });
+});
+
+
+    </script>
+
+    <!-- Load FontAwesome for the icon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
 
 <footer class="footer">
     <div class="container">
@@ -123,38 +281,9 @@
     </div>
 </footer>
 
-<div class="container mt-5">
-    <h4>Ask your question:</h4>
-    <p class="chat-hint">Try asking questions like: 'Job postings', 'How to post a job', or 'Contact support'.</p>
-    <form id="chat-form">
-        <textarea id="message-input" class="form-control" placeholder="Ask a question..." rows="3"></textarea><br>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <br>
-    <div id="chat-response" class="alert alert-info" style="display:none;"></div>
-</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $('#chat-form').on('submit', function(event) {
-        event.preventDefault();
-        var userMessage = $('#message-input').val();
-        $.ajax({
-            type: 'POST',
-            url: '/chatbot/',
-            data: {
-                'message': userMessage,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                $('#chat-response').text(response.response).show();
-            },
-            error: function() {
-                $('#chat-response').text('An error occurred. Please try again.').show();
-            }
-        });
-    });
-</script>
 
 </body>
 </html>

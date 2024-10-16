@@ -2,29 +2,63 @@
 
 {% block content %}
 <style>
-    body{
-        background-color:white;
+    body {
+        background-color: white;
+    }
+
+    .contact-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+    .contact-container h2 {
+        text-align: center;
+        color: #00712D;
+        margin-bottom: 20px;
+    }
+
+    .contact-info {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #343a40;
+    }
+
+    .contact-info i {
+        margin-right: 10px;
+        color: #00712D;
+    }
+
+    .contact-info p {
+        margin-bottom: 10px;
+    }
+
+    .contact-info strong {
+        font-weight: bold;
+    }
+
+    .contact-icon {
+        color: #00712D;
+        margin-right: 15px;
     }
 </style>
-<div style="color:white;max-width: 600px; margin: 50px auto; background-image : linear-gradient(green, darkgreen, green); border-radius: 8px; padding: 20px; box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.1); color:#white;">
-    <h2 style="text-align: center; margin-bottom: 20px;">Contact Us</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div style="margin-bottom: 15px;">
-            <label for="{{ form.name.id_for_label }}" style="display: block; font-weight: bold; margin-bottom: 5px;">{{ form.name.label }}</label>
-            {{ form.name }}
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label for="{{ form.email.id_for_label }}" style="display: block; font-weight: bold; margin-bottom: 5px;">{{ form.email.label }}</label>
-            {{ form.email }}
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="{{ form.message.id_for_label }}" style="display: block; font-weight: bold; margin-bottom: 5px;">{{ form.message.label }}</label>
-            {{ form.message }}
-        </div>
-        <div style="text-align: center;">
-            <button type="submit" style="background-color: white; color: black; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;font-weight:bolder;">Submit</button>
-        </div>
-    </form>
+
+<div class="contact-container">
+    <h2>Contact Information</h2>
+    <div class="contact-info">
+        <p><i class="fas fa-building contact-icon"></i><strong>Company Name:</strong> Gram Setu Pvt. Ltd.</p>
+        <p><i class="fas fa-phone contact-icon"></i><strong>Phone Number:</strong> +91 9777256310</p>
+        <p><i class="fas fa-phone-alt contact-icon"></i><strong>Alternative Number:</strong> +91 6307359630</p>
+        <p><i class="fas fa-map-marker-alt contact-icon"></i><strong>Address:</strong> Lovely professional university, Jalandhar - Delhi G.T Road, Phagwara, Punjab (India) - 144411</p>
+        <p><i class="fas fa-envelope contact-icon"></i><strong>Email:</strong> deepakjgrt99@gmail.com</p>
+    </div>
 </div>
+
+<!-- Include FontAwesome for icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
 {% endblock %}

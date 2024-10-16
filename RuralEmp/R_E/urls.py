@@ -26,5 +26,7 @@ urlpatterns = [
     path('subscription/', views.subscription_page, name='subscription_page'),
     path('payment/', views.payment_view, name='payment'),
     path('chatbot/', views.chatbot, name='chatbot'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('job/done/<int:job_id>/', views.mark_done, name='mark_done'),
+
+              ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
