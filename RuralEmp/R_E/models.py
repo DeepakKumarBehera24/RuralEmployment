@@ -1,8 +1,9 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
+# from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from django.utils import timezone
+from django.utils.timezone import now
 
 
 class Signup(models.Model):
@@ -19,7 +20,7 @@ class Signup(models.Model):
     state = models.CharField(max_length=15)
     phoneNumber = models.CharField(max_length=15, unique=True)
     userType = models.CharField(max_length=20, choices=USER_TYPE, default='worker head')
-    adharNumber = models.CharField(max_length=16)
+    adharNumber = models.CharField(max_length=12)
 
     def __str__(self):
         return f"{self.firstName} {self.lastName}"
@@ -61,19 +62,19 @@ class Job(models.Model):
     @property
     def is_expired(self):
         """Check if the job has expired based on the date and number of days."""
-        job_end_date = datetime.combine(job.date, datetime.min.time()) + timedelta(days=job.days)
+        job_end_date = datetime.combine(Job.date, datetime.min.time()) + timedelta(days=job.days)
         return job_end_date < timezone.now().date()
 
 
 class Feedback(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     feedback = models.TextField()
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1)  # Rating from 1 to 5
-    # (1 is the lowest and 5 is the highest rating here)
-    date = models.DateField(auto_now_add=True)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Rating choices: 1-5
+    worker = models.ForeignKey('WorkerHead', on_delete=models.CASCADE, related_name='feedbacks')
+    created_at = models.DateTimeField(default=now)
 
     def __str__(self):
-        return f"Feedback from {self.name} on {self.date}"
+        return f"Feedback from {self.name}"
 
 
 class Contact(models.Model):

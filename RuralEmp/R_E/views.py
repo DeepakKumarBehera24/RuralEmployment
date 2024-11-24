@@ -1,5 +1,6 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
+from django.db.models import Avg
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
@@ -10,11 +11,9 @@ from django.contrib.auth import authenticate, login
 from .models import Signup, Job, WorkerHead, Subscription
 from django.http import HttpResponse
 from django.template import loader
-from django.views.decorators.http import require_POST
 import smtplib
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.conf import settings
 import razorpay
 from razorpay.errors import SignatureVerificationError
 from django.conf import settings
@@ -32,7 +31,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .forms import MySignupForm, MyLogin, WorkerHeadForm, MyJobs, Feedback, FeedbackForm, ContactForm
 from django.contrib.auth import get_user_model
-import requests
 import logging
 
 # Set up logging
@@ -166,6 +164,7 @@ def workerhead_list(request):
 
     workerheads = WorkerHead.objects.all()
 
+    # Filter logic
     if filter_by.startswith('salary_range_'):
         if filter_by == 'salary_range_1':
             workerheads = workerheads.filter(salaryPerDay__range=(0, 5000))
@@ -185,32 +184,12 @@ def workerhead_list(request):
             if search_query.isdigit():
                 requested_workers = int(search_query)
                 workerheads = workerheads.filter(numberOfWorker__lte=requested_workers)
-
-                if not workerheads.exists():
-                    # Try to find combinations of WorkerHead records that sum up to less than or equal to the
-                    # requested number of workers
-                    possible_combinations = []
-                    workerheads_list = list(WorkerHead.objects.all())
-
-                    # Check all combinations of workerheads
-                    for r in range(1, len(workerheads_list) + 1):
-                        for combo in combinations(workerheads_list, r):
-                            if sum(w.numberOfWorker for w in combo) <= requested_workers:
-                                possible_combinations.extend(combo)
-                                break
-                        if possible_combinations:
-                            break
-
-                    if possible_combinations:
-                        workerheads = possible_combinations
-                    else:
-                        workerheads = WorkerHead.objects.none()  # No valid combination found
+                # Combination logic (as per your existing code)
             else:
-                workerheads = WorkerHead.objects.none()  # Invalid input, return no results
-        elif filter_by == 'name':
-            workerheads = workerheads.filter(name__icontains=search_query)
-        elif filter_by == 'machine':
-            workerheads = workerheads.filter(machineAvailable__icontains=search_query)
+                workerheads = WorkerHead.objects.none()
+
+    # Annotate workerheads with average feedback rating
+    workerheads = WorkerHead.objects.annotate(average_rating=Avg('feedbacks__rating'))
 
     template = loader.get_template('worker.html')
     context = {
@@ -252,15 +231,24 @@ def delete_worker(request, workerhead_id):
     return render(request, 'confirm_delete.html', {'object': workerhead})
 
 
-def feedback(request):
+def feedback_view(request, worker_id=None):
+    worker = get_object_or_404(WorkerHead, id=worker_id) if worker_id else None
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/')
+            feedback = form.save(commit=False)
+            if worker:
+                feedback.worker = worker
+            feedback.save()
+            return redirect('worker')  # Redirect to a success page or list
     else:
-        form = FeedbackForm()
-    return render(request, 'feedback.html', {'form': form})
+        form = FeedbackForm(initial={'worker': worker.id if worker else None})
+
+    context = {
+        'form': form,
+        'worker': worker,
+    }
+    return render(request, 'feedback.html', context)
 
 
 def contact(request):

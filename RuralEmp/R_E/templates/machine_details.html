@@ -83,7 +83,6 @@
             background-color: #f8f9fa;
             border-radius: 10px;
         }
-
         .form-row {
             margin-bottom: 10px;
         }
@@ -110,12 +109,12 @@
                         <form method="post" action="{% url 'machine_details' machine.id %}">
                             {% csrf_token %}
                             <!-- Mark as Booked or Release button -->
-                            <button type="submit" name="toggle_booking" class="btn btn-primary">
+                            <button type="submit" name="toggle_booking" class="btn btn-primary" style="background-color:blue;">
                                 {% if machine.is_booked %} Release {% else %} Mark as Booked {% endif %}
                             </button>
                             <!-- Cancel Booking button will appear only if the machine is booked -->
                             {% if machine.is_booked %}
-                                <button type="submit" name="cancel_booking" class="btn btn-danger">Cancel Booking</button>
+                                <button type="submit" name="cancel_booking" class="btn btn-danger" style="background-color:#CD5C08;">Cancel Booking</button>
                             {% endif %}
                         </form>
                     {% else %}

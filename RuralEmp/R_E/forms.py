@@ -74,9 +74,10 @@ class MyJobs(forms.ModelForm):
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ['name', 'feedback', 'rating']
+        fields = ['name', 'feedback', 'rating', 'worker']
         widgets = {
             'rating': forms.Select(choices=Feedback._meta.get_field('rating').choices),
+            'worker': forms.Select(attrs={'class': 'form-select'}),
         }
 
 

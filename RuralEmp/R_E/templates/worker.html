@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load form_filters %}
 {% block content %}
     <style>
         /* Add Worker Head button styling */
@@ -102,13 +102,25 @@
         .search-form button:hover {
             background-color: #0056b3;
         }
+
+        .stars {
+            color: #FFD700; /* Gold color for stars */
+        }
+
+        .star {
+            font-size: 20px;
+        }
+
+        .star.filled {
+            color: #FFD700; /* Filled star color */
+        }
     </style>
 
     <!-- Add Worker Head Button -->
     <a href="{% url 'workform' %}" class="add-worker-button" style="margin-top:50px;">Add Worker Head</a>
 
     <!-- Search and Filter Form -->
-    <form method="get" class="search-form" >
+    <form method="get" class="search-form">
         <select name="filter_by">
             <option value="" {% if not filter_by %}selected{% endif %}>Filter by</option>
             <option value="name" {% if filter_by == 'name' %}selected{% endif %}>Name</option>
@@ -125,6 +137,8 @@
 
     <!-- Worker Heads Listing -->
     <h1>Worker Heads</h1>
+
+    {% if workerheads %}
     <ul class="workerhead-list">
         {% for worker in workerheads %}
         <li>
@@ -132,17 +146,41 @@
             <p><strong>Number of Workers:</strong> {{ worker.numberOfWorker }}</p>
             <p><strong>Charges per Day:</strong> {{ worker.salaryPerDay }}</p>
             <p><strong>Machine Available:</strong> {{ worker.machineAvailable }}</p>
-<!--            <p><strong>Date:</strong> {{ worker.date }}</p>-->
             <p><strong>Phone Number:</strong> {{ worker.phoneNumber }}</p>
+
+            <p><strong>Feedback:</strong>
+    {% if worker.average_rating %}
+        <span class="stars">
+            {% for i in worker.average_rating|to %}
+                {% if i <= worker.average_rating|floatformat:1 %}
+                    <span class="star filled">★</span>
+                {% else %}
+                    <span class="star">★</span>
+                {% endif %}
+            {% endfor %}
+        </span>
+        ({{ worker.average_rating|floatformat:1 }})
+
+        <!-- Display the number of people who gave feedback -->
+        {% if worker.feedbacks.all %}
+            <span class="feedback-count">({{ worker.feedbacks.count }} feedback{{ worker.feedbacks.count|pluralize }})</span>
+        {% endif %}
+    {% else %}
+        No ratings yet
+    {% endif %}
+</p>
+
+
             {% if worker.user == request.user %}
-                <div class="worker-actions">
-                    <a href="{% url 'edit_worker' worker.id %}">Edit</a>
-                    <a href="{% url 'delete_worker' worker.id %}" onclick="return confirm('Are you sure?');">Delete</a>
-                </div>
+            <div class="worker-actions">
+                <a href="{% url 'edit_worker' worker.id %}">Edit</a>
+                <a href="{% url 'delete_worker' worker.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+            </div>
             {% endif %}
         </li>
-        {% empty %}
-        <p>No worker heads found.</p>
         {% endfor %}
     </ul>
+    {% else %}
+        <p>No worker heads found.</p>
+    {% endif %}
 {% endblock %}
