@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 RAZORPAY_KEY_ID = 'rzp_test_jGyMeB2Rs1A4pB'
 RAZORPAY_KEY_SECRET = 'BIq3tsmYmsWTCHwGLZp9Tn7f'
