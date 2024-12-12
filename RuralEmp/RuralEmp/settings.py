@@ -25,7 +25,7 @@ SECRET_KEY = '8pxu6asxcx*p&&k&x!jmw*tpb&#0x3hyx3-s84u@o1-t702i^c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', ".now.sh"]
 # settings.py
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y', '%Y-%m-%d']
@@ -123,7 +123,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "R_E/static")]
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "R_E/staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
