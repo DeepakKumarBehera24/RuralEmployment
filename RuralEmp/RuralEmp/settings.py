@@ -27,9 +27,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '8pxu6asxcx*p&&k&x!jmw*tpb&#0x3hyx3-s84u@o1-t702i^c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # settings.py
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y', '%Y-%m-%d']
