@@ -13,10 +13,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 
-# Static asset configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,7 +25,7 @@ SECRET_KEY = '8pxu6asxcx*p&&k&x!jmw*tpb&#0x3hyx3-s84u@o1-t702i^c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app']
 # settings.py
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y', '%Y-%m-%d']
@@ -86,10 +82,6 @@ WSGI_APPLICATION = 'RuralEmp.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
 }
 
 
@@ -144,4 +136,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'deepakjgrt99@gmail.com'
 EMAIL_HOST_PASSWORD = 'eljlasisljrvlxkx'
+# Static asset configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
