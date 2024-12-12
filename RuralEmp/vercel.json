@@ -1,13 +1,13 @@
 {
     "builds": [{
-        "src": "RuralEmp/RuralEmp/wsgi.py",
+        "src": "RuralEmp/wsgi.py",
         "use": "@ardnt/vercel-python-wsgi",
         "config": { "maxLambdaSize": "15mb" }
     }],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "RuralEmp/RuralEmp/wsgi.py"
+            "dest": "RuralEmp/wsgi.py"
         }
     ]
 }
